@@ -16,7 +16,7 @@ end
 function rotate(angle) 
 	if angle < 0  then
 		return 1.0, -1.0
-	elseif angle > 0
+	elseif angle > 0 then
 		return -1.0, 1.0
 	else
 		return 1.0, 1.0
