@@ -5,13 +5,14 @@ n_steps = 0
 -- min_v_radial = 2*math.pi/10.0 -- rad/sec
 -- radial_distance = 1.0 -- cm
 v = {left = 0.0, right = 0.0}
+d = {left = -1.0, right = 1.0}
 --[[ This function is executed every time you press the 'execute'
      button ]]
 function init()
 	lv, rv, a = 0.0, 0.0, 0.0
 	move(lv, rv, rotate(a))
 	n_steps = 0
-	robot.leds.set_all_colors("black")
+	robot.leds.set_all_colors("red")
 end
 
 function rotate(angle) 
@@ -34,45 +35,37 @@ end
 function step()
 
 	n_steps = n_steps + 1
-
+	prox_left = 0.0
+	prox_right = 0.0
 	lv, rv, a = 5.0, 5.0, 0.0
 
-	if n_steps % MOVE_STEPS == 0 then
-		lumus_index = 0	
-		lumus_value = 0.0
+	--if n_steps % MOVE_STEPS == 0 then
+		
+		for i= 1, 6 do
+			prox_left = prox_left + robot.proximity[i].value
+		end
 
-		for i=1,24 do
-			if lumus_value < robot.light[i].value then
-				lumus_value = robot.light[i].value
-				lumus_index = i
+		prox_left = prox_left / 6.0
+
+		for i= 19, 24 do
+			prox_right = prox_right + robot.proximity[i].value
+		end
+
+		prox_right = prox_right / 6.0
+		
+		if prox_left > 0.01 or prox_right > 0.01 then  
+			if prox_right > prox_left then --turn left
+				a = math.pi * 0.5
+			elseif prox_left > prox_right then --turn right
+				a = -math.pi * 0.5
+			else -- turn behind
+				a = d[robot.random.uniform_int(1,2)]*math.pi*0.5
 			end
 		end
-
-		-- log("MAX @ " .. lumus_index)
+	--end
 	
-		if lumus_index > 1 or lumus_index < 24 then
-			a = robot.light[lumus_index].angle
-		end
-	end
-
 	move(lv, rv, rotate(a))
-
-	--[[ Check if close to light 
-	(note that the light threshold depends on both sensor and actuator characteristics) ]]
-	light = false
-	sum = 0
-	for i=1,24 do
-		sum = sum + robot.light[i].value
-	end
-	if sum > 2.0 then
-		light = true
-	end
-
-	if light == true then
-		robot.leds.set_all_colors("yellow")
-	else
-		robot.leds.set_all_colors("black")
-	end
+	
 end
 
 
@@ -84,7 +77,7 @@ end
 function reset()
 	move(0.0, 0.0, rotate(0.0))
 	n_steps = 0
-	robot.leds.set_all_colors("black")
+	robot.leds.set_all_colors("green")
 end
 
 --[[ This function is executed only once, when the robot is removed
