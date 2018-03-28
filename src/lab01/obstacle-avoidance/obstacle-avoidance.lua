@@ -39,7 +39,7 @@ function step()
 	prox_right = 0.0
 	lv, rv, a = 5.0, 5.0, 0.0
 
-	--if n_steps % MOVE_STEPS == 0 then
+	if n_steps % MOVE_STEPS == 0 then
 		
 		for i= 1, 6 do
 			prox_left = prox_left + robot.proximity[i].value
@@ -53,7 +53,7 @@ function step()
 
 		prox_right = prox_right / 6.0
 		
-		if prox_left > 0.01 or prox_right > 0.01 then  
+		if prox_left > 0.05 or prox_right > 0.05 then  
 			if prox_right > prox_left then --turn left
 				a = math.pi * 0.5
 			elseif prox_left > prox_right then --turn right
@@ -62,7 +62,7 @@ function step()
 				a = d[robot.random.uniform_int(1,2)]*math.pi*0.5
 			end
 		end
-	--end
+	end
 	
 	move(lv, rv, rotate(a))
 	

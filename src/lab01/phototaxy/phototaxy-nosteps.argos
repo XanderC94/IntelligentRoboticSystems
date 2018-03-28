@@ -29,7 +29,7 @@
 	<footbot_motor_ground implementation="rot_z_only" noise_level="0.01" />
 	<positioning implementation="default" noise_level="0.01" />
       </sensors>
-      <params script="lumus-reacher-nosteps.lua" />
+      <params script="phototaxy-nosteps.lua" />
     </lua_controller>
  
   </controllers>
